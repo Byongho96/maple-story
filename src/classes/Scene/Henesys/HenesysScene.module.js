@@ -16,13 +16,13 @@ export default class HenesysScene extends Scene {
             backgroundSrc: '/assets/back/grassySoil/1.png',
             terrain,
             terrainSrc: {
-                platformLeft: '/assets/terrain/grassySoil.img/enH0/0.png',
-                platformRight: '/assets/terrain/grassySoil.img/enH0/0.png',
-                platformMiddle: '/assets/terrain/grassySoil.img/enH0/0.png',
-                collisionLeft: '/assets/terrain/grassySoil.img/enH0/0.png',
-                collisionRight: '/assets/terrain/grassySoil.img/enH0/0.png',
-                collisionMiddle: '/assets/terrain/grassySoil.img/enH0/0.png',
-                collisionInner: '/assets/terrain/grassySoil.img/enH0/0.png',
+                platformLeft: '/assets/terrain/grassySoil/edU/0.png',
+                platformRight: '/assets/terrain/grassySoil/edU/1.png',
+                platformMiddle: '/assets/terrain/grassySoil/edU/0.png',
+                collisionLeft: '/assets/terrain/grassySoil/enH0/0.png',
+                collisionRight: '/assets/terrain/grassySoil/enH0/1.png',
+                collisionMiddle: '/assets/terrain/grassySoil/enH0/0.png',
+                collisionInner: '/assets/terrain/grassySoil/bsc/0.png',
             },
         });
     }
