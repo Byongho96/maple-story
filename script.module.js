@@ -1,23 +1,23 @@
-import Player from './src/classes/Character/Player.module.js';
+import Player from './src/classes/Character/Player/Player.module.js';
 import HenesysScene from './src/classes/Scene/Henesys/HenesysScene.module.js';
 // 'https://via.placeholder.com/150'
-var scale = window.devicePixelRatio || 1;
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-var scene;
-var player;
-var init = function () {
+const scale = window.devicePixelRatio || 1;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let scene;
+let player;
+const init = () => {
     resize();
     setup();
 };
-var resize = function () {
+const resize = () => {
     canvas.width = window.innerWidth * scale;
     canvas.height = window.innerHeight * scale;
 };
-var setup = function () {
+const setup = () => {
     scene = new HenesysScene();
     player = new Player({
-        canvas: canvas,
+        canvas,
         gravity: scene.gravity,
         maxFallVelocity: scene.maxFallVelocity,
         position: { x: 0, y: 0 },
@@ -28,10 +28,10 @@ var setup = function () {
         platforms: scene.platforms,
     });
 };
-var lastTime = 0;
-var draw = function () {
-    var time = performance.now();
-    var delta = time - lastTime;
+let lastTime = 0;
+const draw = () => {
+    const time = performance.now();
+    const delta = time - lastTime;
     lastTime = time;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     scene.update(delta);

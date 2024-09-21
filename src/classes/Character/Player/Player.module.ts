@@ -1,4 +1,4 @@
-import { SpriteProps } from './../Sprite/SpriteImpl.module.js'
+import { SpriteProps } from '../../Sprite/SpriteImpl.module.js'
 import ICharacter from '@classes/Character/Character.module.js'
 import Sprite from '@classes/Sprite/SpriteImpl.module.js'
 import { Velocity } from 'src/types/index.module.js'

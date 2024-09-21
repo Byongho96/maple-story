@@ -1,4 +1,4 @@
-import Player from '@classes/Character/Player.module.js'
+import Player from '@classes/Character/Player/Player.module.js'
 import HenesysScene from '@classes/Scene/Henesys/HenesysScene.module.js'
 import IScene from '@classes/Scene/Scene.module.js'
 

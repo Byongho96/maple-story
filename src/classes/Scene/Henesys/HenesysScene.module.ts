@@ -1,44 +1,31 @@
-import CollisionBlock from '@classes/CollisionBlock/CollisionBlockImpl.module.js'
-import Scene from '../Scene.module.js'
+import Scene from '../SceneImpl.module.js'
 
-declare var canvas: any
-export default class HenesysScene implements Scene {
-  gravity: number = 0.5
-  maxFallVelocity: number = 30
-  background: HTMLImageElement
-  platforms: CollisionBlock[]
-  collisions: CollisionBlock[]
+const terrain = `00000000000
+00000000000
+00000000000
+00000000000
+000000<-->0
+00000000000
+===}0000000
+++++=======`
 
+export default class HenesysScene extends Scene {
   constructor() {
-    this.background = new Image()
-    this.background.src = '/assets/back/grassySoil/1.png'
-
-    this.platforms = []
-    this.platforms.push(
-      new CollisionBlock({
-        position: { x: 700, y: canvas.height - 120 },
-        width: 100,
-        height: 10,
-      })
-    )
-
-    this.collisions = []
-    this.collisions.push(
-      new CollisionBlock({
-        position: { x: 300, y: canvas.height - 100 },
-        width: 100,
-        height: 100,
-      })
-    )
-  }
-
-  update(delta: number) {
-    // this.platforms.forEach((platform) => platform.update(delta))
-    // this.collisions.forEach((collision) => collision.update(delta))
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    this.platforms.forEach((platform) => platform.draw(ctx))
-    this.collisions.forEach((collision) => collision.draw(ctx))
+    super({
+      gravity: 0.5,
+      maxFallVelocity: 30,
+      bgmSrc: '/assets/bgm/henesys/FloralLife.mp3',
+      backgroundSrc: '/assets/back/grassySoil/1.png',
+      terrain,
+      terrainSrc: {
+        platformLeft: '/assets/terrain/grassySoil.img/enH0/0.png',
+        platformRight: '/assets/terrain/grassySoil.img/enH0/0.png',
+        platformMiddle: '/assets/terrain/grassySoil.img/enH0/0.png',
+        collisionLeft: '/assets/terrain/grassySoil.img/enH0/0.png',
+        collisionRight: '/assets/terrain/grassySoil.img/enH0/0.png',
+        collisionMiddle: '/assets/terrain/grassySoil.img/enH0/0.png',
+        collisionInner: '/assets/terrain/grassySoil.img/enH0/0.png',
+      },
+    })
   }
 }

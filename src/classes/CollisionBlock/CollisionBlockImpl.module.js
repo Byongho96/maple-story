@@ -1,15 +1,25 @@
-var CollisionBlock = /** @class */ (function () {
-    function CollisionBlock(_a) {
-        var position = _a.position, width = _a.width, height = _a.height;
+export default class CollisionBlock {
+    constructor({ position, width, height, imgSrc, imageWidth, imageHeight, }) {
+        this.isLoaded = false;
         this.position = position;
         this.width = width;
         this.height = height;
+        if (imgSrc) {
+            this.image = new Image();
+            this.image.onload = () => {
+                this.isLoaded = true;
+            };
+            this.image.src = imgSrc;
+        }
+        this.imageWidth = imageWidth || width;
+        this.imageHeight = imageHeight || height;
     }
-    CollisionBlock.prototype.draw = function (ctx) {
+    draw(ctx) {
+        if (this.isLoaded) {
+            ctx.drawImage(this.image, this.position.x, this.position.y, this.imageWidth, this.imageHeight);
+        }
         ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-    };
-    return CollisionBlock;
-}());
-export default CollisionBlock;
+    }
+}
 //# sourceMappingURL=CollisionBlockImpl.module.js.map
