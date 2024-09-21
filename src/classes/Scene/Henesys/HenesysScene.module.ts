@@ -1,6 +1,7 @@
 import CollisionBlock from '@classes/CollisionBlock/CollisionBlockImpl.module.js'
 import Scene from '../Scene.module.js'
 
+declare var canvas: any
 export default class HenesysScene implements Scene {
   gravity: number = 0.7
   maxFallVelocity: number = 30
