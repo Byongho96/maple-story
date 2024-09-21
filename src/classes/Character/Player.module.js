@@ -29,6 +29,7 @@ var Player = /** @class */ (function (_super) {
         _this.maxFallVelocity = 0;
         _this.leftPressed = false;
         _this.rightPressed = false;
+        _this.isGrounded = false;
         _this.canvas = props.canvas;
         _this.gravity = props.gravity;
         _this.maxFallVelocity = props.maxFallVelocity;
@@ -62,7 +63,8 @@ var Player = /** @class */ (function (_super) {
                 break;
             case 'AltLeft':
                 event.preventDefault();
-                this.velocity.y = -15;
+                if (this.isGrounded)
+                    this.velocity.y = -15;
                 break;
         }
     };
@@ -80,11 +82,11 @@ var Player = /** @class */ (function (_super) {
     };
     Player.prototype.update = function (delta) {
         // console.log('frame')
-        this.applyGravity(delta);
-        this.checkForHorizontalCollisions();
-        this.checkForVerticalCollisions();
-        this.updateHorizontalPosition(delta);
         this.updateVerticalPosition(delta);
+        this.updateHorizontalPosition(delta);
+        this.checkForVerticalCollisions();
+        this.checkForHorizontalCollisions();
+        this.applyGravity(delta);
     };
     Player.prototype.draw = function (ctx) {
         // super.draw(ctx)
@@ -100,6 +102,7 @@ var Player = /** @class */ (function (_super) {
     };
     Player.prototype.updateVerticalPosition = function (delta) {
         this.position.y += this.velocity.y * (delta / 17);
+        this.isGrounded = false;
     };
     Player.prototype.updateHorizontalPosition = function (delta) {
         if (this.leftPressed)
@@ -123,14 +126,13 @@ var Player = /** @class */ (function (_super) {
         for (var i = 0; i < this.collisions.length; i++) {
             var collision = this.collisions[i];
             if (isColliding(this, collision)) {
-                // console.log('collided with collision1')
                 if (this.rightPressed) {
+                    // console.log('collided with collision1')
                     this.position.x = collision.position.x - this.width - 0.01;
                     return;
                 }
                 if (this.leftPressed) {
                     this.position.x = collision.position.x + collision.width + 0.01;
-                    // console.log('collided with collision2')
                     return;
                 }
             }
@@ -140,6 +142,7 @@ var Player = /** @class */ (function (_super) {
         // check for collisions with canvas
         if (this.position.y + this.height > this.canvas.height) {
             this.velocity.y = 0;
+            this.isGrounded = true;
             this.position.y = this.canvas.height - this.height - 0.01;
             return;
         }
@@ -149,10 +152,11 @@ var Player = /** @class */ (function (_super) {
             if (isColliding(this, collision)) {
                 if (this.velocity.y > 0) {
                     this.velocity.y = 0;
+                    this.isGrounded = true;
                     this.position.y = collision.position.y - this.height - 0.01;
                     return;
                 }
-                if (this.velocity.y < 0) {
+                if (this.velocity.y < 0 && !this.leftPressed && !this.rightPressed) {
                     this.velocity.y = 0;
                     this.position.y = collision.position.y + collision.height + 0.01;
                     return;
@@ -165,6 +169,7 @@ var Player = /** @class */ (function (_super) {
             if (isPlatformColliding(this, platform)) {
                 if (this.velocity.y > 0) {
                     this.velocity.y = 0;
+                    this.isGrounded = true;
                     this.position.y = platform.position.y - this.height - 0.01;
                     return;
                 }

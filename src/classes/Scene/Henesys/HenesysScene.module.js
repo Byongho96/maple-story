@@ -1,19 +1,19 @@
 import CollisionBlock from '../../CollisionBlock/CollisionBlockImpl.module.js';
 var HenesysScene = /** @class */ (function () {
     function HenesysScene() {
-        this.gravity = 0.7;
+        this.gravity = 0.5;
         this.maxFallVelocity = 30;
         this.background = new Image();
         this.background.src = '/assets/back/grassySoil/1.png';
         this.platforms = [];
         this.platforms.push(new CollisionBlock({
-            position: { x: 500, y: canvas.height - 120 },
+            position: { x: 700, y: canvas.height - 120 },
             width: 100,
-            height: 100,
+            height: 10,
         }));
         this.collisions = [];
         this.collisions.push(new CollisionBlock({
-            position: { x: 0, y: canvas.height - 100 },
+            position: { x: 300, y: canvas.height - 100 },
             width: 100,
             height: 100,
         }));

@@ -3,7 +3,7 @@ import Scene from '../Scene.module.js'
 
 declare var canvas: any
 export default class HenesysScene implements Scene {
-  gravity: number = 0.7
+  gravity: number = 0.5
   maxFallVelocity: number = 30
   background: HTMLImageElement
   platforms: CollisionBlock[]
@@ -16,16 +16,16 @@ export default class HenesysScene implements Scene {
     this.platforms = []
     this.platforms.push(
       new CollisionBlock({
-        position: { x: 500, y: canvas.height - 120 },
+        position: { x: 700, y: canvas.height - 120 },
         width: 100,
-        height: 100,
+        height: 10,
       })
     )
 
     this.collisions = []
     this.collisions.push(
       new CollisionBlock({
-        position: { x: 0, y: canvas.height - 100 },
+        position: { x: 300, y: canvas.height - 100 },
         width: 100,
         height: 100,
       })
