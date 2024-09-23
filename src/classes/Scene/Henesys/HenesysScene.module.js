@@ -1,4 +1,5 @@
 import Scene from '../SceneImpl.module.js';
+import { getStaticPath } from '../../../utils/static.js';
 const terrain = `00000000000
 00000000000
 00000000000
@@ -12,17 +13,17 @@ export default class HenesysScene extends Scene {
         super({
             gravity: 0.5,
             maxFallVelocity: 30,
-            bgmSrc: '/assets/bgm/henesys/FloralLife.mp3',
-            backgroundSrc: '/assets/back/grassySoil/1.png',
+            bgmSrc: getStaticPath('/assets/bgm/henesys/FloralLife.mp3'),
+            backgroundSrc: getStaticPath('/assets/back/grassySoil/1.png'),
             terrain,
             terrainSrc: {
-                platformLeft: '/assets/terrain/grassySoil/edU/0.png',
-                platformRight: '/assets/terrain/grassySoil/edU/1.png',
-                platformMiddle: '/assets/terrain/grassySoil/edU/0.png',
-                collisionLeft: '/assets/terrain/grassySoil/enH0/0.png',
-                collisionRight: '/assets/terrain/grassySoil/enH0/1.png',
-                collisionMiddle: '/assets/terrain/grassySoil/enH0/0.png',
-                collisionInner: '/assets/terrain/grassySoil/bsc/0.png',
+                platformLeft: getStaticPath('/assets/terrain/grassySoil/edU/0.png'),
+                platformRight: getStaticPath('/assets/terrain/grassySoil/edU/1.png'),
+                platformMiddle: getStaticPath('/assets/terrain/grassySoil/edU/0.png'),
+                collisionLeft: getStaticPath('/assets/terrain/grassySoil/enH0/0.png'),
+                collisionRight: getStaticPath('/assets/terrain/grassySoil/enH0/1.png'),
+                collisionMiddle: getStaticPath('/assets/terrain/grassySoil/enH0/0.png'),
+                collisionInner: getStaticPath('/assets/terrain/grassySoil/bsc/0.png'),
             },
         });
     }
