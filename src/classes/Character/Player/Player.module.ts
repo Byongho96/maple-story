@@ -102,14 +102,13 @@ export default class Player extends Sprite implements ICharacter {
 
   update(delta: number) {
     // console.log('frame')
+    this.applyGravity(delta)
 
     this.updateVerticalPosition(delta)
     this.updateHorizontalPosition(delta)
 
-    this.checkForVerticalCollisions()
-    this.checkForHorizontalCollisions()
-
-    this.applyGravity(delta)
+    // this.checkForVerticalCollisions()
+    // this.checkForHorizontalCollisions()
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -130,85 +129,65 @@ export default class Player extends Sprite implements ICharacter {
   updateVerticalPosition(delta: number) {
     this.position.y += this.velocity.y * (delta / 17)
     this.isGrounded = false
+
+    if (this.position.y + this.height > this.canvas.height) {
+      this.position.y = this.canvas.height - this.height
+      this.velocity.y = 0
+      this.isGrounded = true
+      return
+    }
+
+    for (let i = 0; i < this.collisions.length; i++) {
+      const collision = this.collisions[i]
+
+      if (isColliding(this, collision)) {
+        this.position.y -= this.velocity.y * (delta / 17)
+        this.velocity.y = 0
+        this.isGrounded = true
+        return
+      }
+    }
+
+    if (this.velocity.y < 0) return
+
+    for (let i = 0; i < this.platforms.length; i++) {
+      const platform = this.platforms[i]
+
+      if (isPlatformColliding(this, platform)) {
+        this.position.y -= this.velocity.y * (delta / 17)
+        this.velocity.y = 0
+        this.isGrounded = true
+        return
+      }
+    }
   }
 
   updateHorizontalPosition(delta: number) {
     if (this.leftPressed) this.position.x -= this.velocity.x * (delta / 17)
     else if (this.rightPressed)
       this.position.x += this.velocity.x * (delta / 17)
-  }
 
-  checkForHorizontalCollisions() {
-    // check for collisions with canvas
     if (this.position.x < 0) {
-      this.position.x = 0.01
-      // console.log('collided with left wall')
+      this.position.x = 0
       return
     }
 
     if (this.position.x + this.width > this.canvas.width) {
-      this.position.x = this.canvas.width - this.width - 0.01
-      // console.log('collided with right wall')
+      this.position.x = this.canvas.width - this.width
       return
     }
 
-    // check for collisions with collisions
     for (let i = 0; i < this.collisions.length; i++) {
       const collision = this.collisions[i]
 
       if (isColliding(this, collision)) {
-        if (this.rightPressed) {
-          // console.log('collided with collision1')
-          this.position.x = collision.position.x - this.width - 0.01
-          return
-        }
-
         if (this.leftPressed) {
-          this.position.x = collision.position.x + collision.width + 0.01
-          return
-        }
-      }
-    }
-  }
-
-  checkForVerticalCollisions() {
-    // check for collisions with canvas
-    if (this.position.y + this.height > this.canvas.height) {
-      this.velocity.y = 0
-      this.isGrounded = true
-      this.position.y = this.canvas.height - this.height - 0.01
-      return
-    }
-
-    // check for collisions with collisions
-    for (let i = 0; i < this.collisions.length; i++) {
-      const collision = this.collisions[i]
-
-      if (isColliding(this, collision)) {
-        if (this.velocity.y > 0) {
-          this.velocity.y = 0
-          this.isGrounded = true
-          this.position.y = collision.position.y - this.height - 0.01
+          this.position.x += this.velocity.x * (delta / 17)
           return
         }
 
-        if (this.velocity.y < 0 && !this.leftPressed && !this.rightPressed) {
-          this.velocity.y = 0
-          this.position.y = collision.position.y + collision.height + 0.01
-          return
-        }
-      }
-    }
-
-    // check for collisions with platforms
-    for (let i = 0; i < this.platforms.length; i++) {
-      const platform = this.platforms[i]
-
-      if (isPlatformColliding(this, platform)) {
-        if (this.velocity.y > 0) {
-          this.velocity.y = 0
-          this.isGrounded = true
-          this.position.y = platform.position.y - this.height - 0.01
+        if (this.rightPressed) {
+          this.position.x -= this.velocity.x * (delta / 17)
           return
         }
       }
