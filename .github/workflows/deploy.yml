@@ -1,0 +1,45 @@
+name: GitHub Pages
+
+# master 브랜치에 push 작업이 발생했을 때,
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # 작업 실행 OS 설정
+    permissions: # 저장소에 대해 쓰기 권한을 부여한다.
+      contents: write
+    concurrency: # 작업 동시성을 제어한다 (하단 설명 참조)
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3 # 현재 저장소를 checkout해서 코드를 가져온다.
+
+      # Node 환경을 셋팅한다.
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # 내가 사용한 노드 버전
+
+      # 캐시 관리
+      # 다운로드한 패키지를 캐시하여 다음 실행 시에 다시 다운로드하지 않는다. (하단 설명 참조)
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: npm ci
+      #   - run: npm run format
+      #   - run: npm run test
+      - run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
