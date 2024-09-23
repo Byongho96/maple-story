@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ESNext", // 브라우저 모듈 시스템
+    "sourceMap": true,
+    "moduleResolution": "Bundler", // 모듈 해석 방식 (node: Node.js 방식)
+    "esModuleInterop": true, // CommonJS 및 ES Module 호환성
+
+    "noImplicitAny": true,
+
+    // tsconfig-paths : tsconfig.json 파일에 설정된 paths 속성을 사용하여 모듈을 해석
+    // tsc-alias : tsconfig.json 파일에 설정된 paths 속성을 사용하여 모듈을 js로 컴파일
+    "outDir": "./",
+    "baseUrl": "./",
+    "paths": {
+      "@classes/*": ["src/classes/*"],
+      "@const/*": ["src/const/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "typeRoots": ["./src/types", "./node_modules/@types"]
+  },
+
+  "exclude": [
+    "node_modules" // node_modules 디렉토리를 제외
+  ]
+}
