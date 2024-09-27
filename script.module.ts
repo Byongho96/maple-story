@@ -1,6 +1,7 @@
 import Player from '@classes/Character/Player/Player.module.js'
 import HenesysScene from '@classes/Scene/Henesys/HenesysScene.module.js'
 import IScene from '@classes/Scene/Scene.module.js'
+import imageLoader from '@utils/ImageLoader.module.js'
 
 // 'https://via.placeholder.com/150'
 
@@ -43,13 +44,15 @@ const draw = () => {
   const delta = time - lastTime
   lastTime = time
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  if (imageLoader.isLoaded()) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  scene.update(delta)
-  scene.draw(ctx)
+    scene.update(delta)
+    scene.draw(ctx)
 
-  player.update(delta)
-  player.draw(ctx)
+    player.update(delta)
+    player.draw(ctx)
+  }
 
   requestAnimationFrame(draw)
 }

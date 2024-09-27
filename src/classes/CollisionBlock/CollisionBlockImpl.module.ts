@@ -1,5 +1,6 @@
 import { Position } from 'src/types/index.module.js'
 import ICollisionBlock from '@classes/CollisionBlock/CollisionBlock.module.js'
+import imageLoader from '@utils/ImageLoader.module.js'
 
 type CollisionBlockProps = {
   position: Position
@@ -20,8 +21,6 @@ export default class CollisionBlock implements ICollisionBlock {
   imageWidth: number
   imageHeight: number
 
-  isLoaded: boolean = false
-
   constructor({
     position,
     width,
@@ -35,9 +34,10 @@ export default class CollisionBlock implements ICollisionBlock {
     this.height = height
 
     if (imgSrc) {
+      imageLoader.beforeLoad()
       this.image = new Image()
       this.image.onload = () => {
-        this.isLoaded = true
+        imageLoader.onLoad()
       }
       this.image.src = imgSrc
     }
@@ -47,15 +47,13 @@ export default class CollisionBlock implements ICollisionBlock {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    if (this.isLoaded) {
-      ctx.drawImage(
-        this.image,
-        this.position.x,
-        this.position.y,
-        this.imageWidth,
-        this.imageHeight
-      )
-    }
+    ctx.drawImage(
+      this.image,
+      this.position.x,
+      this.position.y,
+      this.imageWidth,
+      this.imageHeight
+    )
 
     ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
