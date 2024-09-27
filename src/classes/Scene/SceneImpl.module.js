@@ -13,7 +13,7 @@ export default class Scene {
     constructor(props) {
         this.platforms = [];
         this.collisions = [];
-        this.gravity = props.gravity || 0.7;
+        this.gravity = props.gravity || 1;
         this.maxFallVelocity = props.maxFallVelocity || 30;
         this.bgmSrc = props.bgmSrc;
         this.backgroundSrc = props.backgroundSrc;
@@ -41,7 +41,7 @@ export default class Scene {
                     this.platforms.push(new CollisionBlock({
                         position,
                         width: 100,
-                        height: 10,
+                        height: 20,
                         imgSrc: this.terrainSrc[terrainType],
                         imageWidth: 100,
                         imageHeight: 100,

@@ -1,5 +1,6 @@
 import { Position } from 'src/types/index.module.js'
 import ISprite, { SpriteFrame } from '@classes/Sprite/Sprite.module.js'
+import imageLoader from '@utils/ImageLoader.module.js'
 
 export type SpriteProps = {
   position: Position
@@ -19,7 +20,6 @@ export default class Sprite implements ISprite {
     buffer: number // milliseconds for next frame
   }
 
-  loaded: boolean = false
   image: HTMLImageElement = new Image()
 
   currentFrame: number = 0
@@ -35,10 +35,11 @@ export default class Sprite implements ISprite {
     this.scale = scale
 
     // load image
+    imageLoader.beforeLoad()
     this.image.onload = () => {
       this.width = (this.image.width / this.frame.count) * this.scale
       this.height = this.image.height * this.scale
-      this.loaded = true
+      imageLoader.onLoad()
     }
     this.image.src = imageSrc
 
@@ -47,8 +48,6 @@ export default class Sprite implements ISprite {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    if (!this.loaded) return
-
     const cropBox = {
       position: {
         x: this.currentFrame * (this.image.width / this.frame.count),

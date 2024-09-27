@@ -14,6 +14,7 @@ export default class Player extends Sprite {
         this.leftPressed = false;
         this.rightPressed = false;
         this.isGrounded = false;
+        this.startPosition = Object.assign({}, props.position);
         this.canvas = props.canvas;
         this.gravity = props.gravity;
         this.maxFallVelocity = props.maxFallVelocity;
@@ -87,7 +88,7 @@ export default class Player extends Sprite {
         this.position.y += this.velocity.y * (delta / 17);
         this.isGrounded = false;
         if (this.position.y + this.height > this.canvas.height) {
-            this.position.y = this.canvas.height - this.height;
+            this.position = Object.assign({}, this.startPosition);
             this.velocity.y = 0;
             this.isGrounded = true;
             return;
@@ -95,7 +96,7 @@ export default class Player extends Sprite {
         for (let i = 0; i < this.collisions.length; i++) {
             const collision = this.collisions[i];
             if (isColliding(this, collision)) {
-                this.position.y -= this.velocity.y * (delta / 17);
+                this.position.y = collision.position.y - this.height - 0.01;
                 this.velocity.y = 0;
                 this.isGrounded = true;
                 return;
@@ -130,11 +131,11 @@ export default class Player extends Sprite {
             const collision = this.collisions[i];
             if (isColliding(this, collision)) {
                 if (this.leftPressed) {
-                    this.position.x += this.velocity.x * (delta / 17);
+                    this.position.x = collision.position.x + collision.width + 0.01;
                     return;
                 }
                 if (this.rightPressed) {
-                    this.position.x -= this.velocity.x * (delta / 17);
+                    this.position.x = collision.position.x - this.width - 0.01;
                     return;
                 }
             }

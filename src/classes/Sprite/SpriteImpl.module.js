@@ -1,24 +1,23 @@
+import imageLoader from '../../utils/ImageLoader.module.js';
 export default class Sprite {
     constructor({ position, imageSrc, frame: { count, buffer }, scale = 1, }) {
-        this.loaded = false;
         this.image = new Image();
         this.currentFrame = 0;
         this.time = 0;
         this.position = position;
         this.scale = scale;
         // load image
+        imageLoader.beforeLoad();
         this.image.onload = () => {
             this.width = (this.image.width / this.frame.count) * this.scale;
             this.height = this.image.height * this.scale;
-            this.loaded = true;
+            imageLoader.onLoad();
         };
         this.image.src = imageSrc;
         this.frame = { count, buffer };
         this.currentFrame = 0;
     }
     draw(ctx) {
-        if (!this.loaded)
-            return;
         const cropBox = {
             position: {
                 x: this.currentFrame * (this.image.width / this.frame.count),

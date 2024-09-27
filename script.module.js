@@ -1,5 +1,6 @@
 import Player from './src/classes/Character/Player/Player.module.js';
 import HenesysScene from './src/classes/Scene/Henesys/HenesysScene.module.js';
+import imageLoader from './src/utils/ImageLoader.module.js';
 // 'https://via.placeholder.com/150'
 const scale = window.devicePixelRatio || 1;
 const canvas = document.getElementById('canvas');
@@ -33,11 +34,13 @@ const draw = () => {
     const time = performance.now();
     const delta = time - lastTime;
     lastTime = time;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    scene.update(delta);
-    scene.draw(ctx);
-    player.update(delta);
-    player.draw(ctx);
+    if (imageLoader.isLoaded()) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        scene.update(delta);
+        scene.draw(ctx);
+        player.update(delta);
+        player.draw(ctx);
+    }
     requestAnimationFrame(draw);
 };
 init();
