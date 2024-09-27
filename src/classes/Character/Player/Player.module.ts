@@ -1,7 +1,7 @@
 import { SpriteProps } from '../../Sprite/SpriteImpl.module.js'
 import ICharacter from '@classes/Character/Character.module.js'
 import Sprite from '@classes/Sprite/SpriteImpl.module.js'
-import { Velocity } from 'src/types/index.module.js'
+import { Position, Velocity } from 'src/types/index.module.js'
 import CollisionBlock from '@classes/CollisionBlock/CollisionBlockImpl.module.js'
 import { isColliding, isPlatformColliding } from '@utils/collision.module.js'
 
@@ -20,6 +20,8 @@ export type PlayerProps = SpriteProps & {
 }
 
 export default class Player extends Sprite implements ICharacter {
+  private startPosition: Position
+
   canvas: HTMLCanvasElement
   gravity: number = 0
   maxFallVelocity: number = 0
@@ -43,7 +45,7 @@ export default class Player extends Sprite implements ICharacter {
 
   constructor(props: PlayerProps) {
     super(props)
-
+    this.startPosition = { ...props.position }
     this.canvas = props.canvas
 
     this.gravity = props.gravity
@@ -131,7 +133,7 @@ export default class Player extends Sprite implements ICharacter {
     this.isGrounded = false
 
     if (this.position.y + this.height > this.canvas.height) {
-      this.position.y = this.canvas.height - this.height
+      this.position = { ...this.startPosition }
       this.velocity.y = 0
       this.isGrounded = true
       return
@@ -141,7 +143,7 @@ export default class Player extends Sprite implements ICharacter {
       const collision = this.collisions[i]
 
       if (isColliding(this, collision)) {
-        this.position.y -= this.velocity.y * (delta / 17)
+        this.position.y = collision.position.y - this.height - 0.01
         this.velocity.y = 0
         this.isGrounded = true
         return
@@ -182,12 +184,12 @@ export default class Player extends Sprite implements ICharacter {
 
       if (isColliding(this, collision)) {
         if (this.leftPressed) {
-          this.position.x += this.velocity.x * (delta / 17)
+          this.position.x = collision.position.x + collision.width + 0.01
           return
         }
 
         if (this.rightPressed) {
-          this.position.x -= this.velocity.x * (delta / 17)
+          this.position.x = collision.position.x - this.width - 0.01
           return
         }
       }
