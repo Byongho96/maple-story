@@ -5,6 +5,9 @@ import { Position, Velocity } from 'src/types/index.module.js'
 import CollisionBlock from '@classes/CollisionBlock/CollisionBlockImpl.module.js'
 import { isColliding, isPlatformColliding } from '@utils/collision.module.js'
 
+const sceneWidth = 2300
+const sceneHeight = 900
+
 export type PlayerProps = SpriteProps & {
   canvas: HTMLCanvasElement
   gravity: number
@@ -36,6 +39,12 @@ export default class Player extends Sprite implements ICharacter {
   rightPressed: boolean = false
   isGrounded: boolean = false
 
+  cameraBox = {
+    position: { x: 0, y: 0 },
+    width: 600,
+    height: 500,
+  }
+
   // animations: {
   //   [key in CharacterAnimationKey]: {
   //     image: HTMLImageElement
@@ -55,6 +64,8 @@ export default class Player extends Sprite implements ICharacter {
 
     this.collisions = props.collisions
     this.platforms = props.platforms
+
+    this.cameraBox.position = props.position
 
     // this.animations = props.animations
     // for (let key in this.animations) {
@@ -119,6 +130,14 @@ export default class Player extends Sprite implements ICharacter {
     // draw hitBox
     ctx.fillStyle = 'green'
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+    ctx.fillRect(
+      this.cameraBox.position.x,
+      this.cameraBox.position.y,
+      this.cameraBox.width,
+      this.cameraBox.height
+    )
   }
 
   applyGravity(delta: number) {
@@ -132,7 +151,7 @@ export default class Player extends Sprite implements ICharacter {
     this.position.y += this.velocity.y * (delta / 17)
     this.isGrounded = false
 
-    if (this.position.y + this.height > this.canvas.height) {
+    if (this.position.y + this.height > sceneHeight) {
       this.position = { ...this.startPosition }
       this.velocity.y = 0
       this.isGrounded = true
@@ -156,7 +175,7 @@ export default class Player extends Sprite implements ICharacter {
       const platform = this.platforms[i]
 
       if (isPlatformColliding(this, platform)) {
-        this.position.y -= this.velocity.y * (delta / 17)
+        this.position.y = platform.position.y - this.height - 0.01
         this.velocity.y = 0
         this.isGrounded = true
         return
@@ -174,8 +193,8 @@ export default class Player extends Sprite implements ICharacter {
       return
     }
 
-    if (this.position.x + this.width > this.canvas.width) {
-      this.position.x = this.canvas.width - this.width
+    if (this.position.x + this.width > sceneWidth) {
+      this.position.x = sceneWidth - this.width
       return
     }
 
@@ -193,6 +212,44 @@ export default class Player extends Sprite implements ICharacter {
           return
         }
       }
+    }
+  }
+
+  updateHorizontalCameraBox(canvas: HTMLCanvasElement, camera: any) {
+    // Right
+    const cameraBoxRight = this.cameraBox.position.x + this.cameraBox.width
+
+    if (cameraBoxRight > sceneWidth) return
+
+    if (cameraBoxRight > camera.position.x + canvas.width) {
+      camera.position.x += this.velocity.x
+      return
+    }
+
+    // Left
+    if (this.cameraBox.position.x < 0) return
+
+    if (this.cameraBox.position.x < camera.position.x) {
+      camera.position.x -= this.velocity.x
+      return
+    }
+  }
+
+  updateVerticalCameraBox(canvas: HTMLCanvasElement, camera: any) {
+    // Down
+    const cameraBoxBottom = this.cameraBox.position.y + this.cameraBox.height
+
+    if (cameraBoxBottom > sceneHeight) return
+
+    if (cameraBoxBottom > camera.position.y + canvas.height) {
+      camera.position.y += this.velocity.y
+    }
+
+    // Up
+    if (this.cameraBox.position.y < 0) return
+
+    if (this.cameraBox.position.y < camera.position.y) {
+      camera.position.y -= this.velocity.y
     }
   }
 }
