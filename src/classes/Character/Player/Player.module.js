@@ -1,5 +1,7 @@
 import Sprite from '../../Sprite/SpriteImpl.module.js';
 import { isColliding, isPlatformColliding } from '../../../utils/collision.module.js';
+const sceneWidth = 2300;
+const sceneHeight = 900;
 export default class Player extends Sprite {
     // animations: {
     //   [key in CharacterAnimationKey]: {
@@ -14,6 +16,11 @@ export default class Player extends Sprite {
         this.leftPressed = false;
         this.rightPressed = false;
         this.isGrounded = false;
+        this.cameraBox = {
+            position: { x: 0, y: 0 },
+            width: 600,
+            height: 500,
+        };
         this.startPosition = Object.assign({}, props.position);
         this.canvas = props.canvas;
         this.gravity = props.gravity;
@@ -22,6 +29,7 @@ export default class Player extends Sprite {
         this.velocity = { x: 5, y: 5 };
         this.collisions = props.collisions;
         this.platforms = props.platforms;
+        this.cameraBox.position = props.position;
         // this.animations = props.animations
         // for (let key in this.animations) {
         //   const image = new Image()
@@ -77,6 +85,8 @@ export default class Player extends Sprite {
         // draw hitBox
         ctx.fillStyle = 'green';
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(this.cameraBox.position.x, this.cameraBox.position.y, this.cameraBox.width, this.cameraBox.height);
     }
     applyGravity(delta) {
         this.velocity.y += this.gravity * (delta / 17);
@@ -87,7 +97,7 @@ export default class Player extends Sprite {
     updateVerticalPosition(delta) {
         this.position.y += this.velocity.y * (delta / 17);
         this.isGrounded = false;
-        if (this.position.y + this.height > this.canvas.height) {
+        if (this.position.y + this.height > sceneHeight) {
             this.position = Object.assign({}, this.startPosition);
             this.velocity.y = 0;
             this.isGrounded = true;
@@ -107,7 +117,7 @@ export default class Player extends Sprite {
         for (let i = 0; i < this.platforms.length; i++) {
             const platform = this.platforms[i];
             if (isPlatformColliding(this, platform)) {
-                this.position.y -= this.velocity.y * (delta / 17);
+                this.position.y = platform.position.y - this.height - 0.01;
                 this.velocity.y = 0;
                 this.isGrounded = true;
                 return;
@@ -123,8 +133,8 @@ export default class Player extends Sprite {
             this.position.x = 0;
             return;
         }
-        if (this.position.x + this.width > this.canvas.width) {
-            this.position.x = this.canvas.width - this.width;
+        if (this.position.x + this.width > sceneWidth) {
+            this.position.x = sceneWidth - this.width;
             return;
         }
         for (let i = 0; i < this.collisions.length; i++) {
@@ -139,6 +149,38 @@ export default class Player extends Sprite {
                     return;
                 }
             }
+        }
+    }
+    updateHorizontalCameraBox(canvas, camera) {
+        // Right
+        const cameraBoxRight = this.cameraBox.position.x + this.cameraBox.width;
+        if (cameraBoxRight > sceneWidth)
+            return;
+        if (cameraBoxRight > camera.position.x + canvas.width) {
+            camera.position.x += this.velocity.x;
+            return;
+        }
+        // Left
+        if (this.cameraBox.position.x < 0)
+            return;
+        if (this.cameraBox.position.x < camera.position.x) {
+            camera.position.x -= this.velocity.x;
+            return;
+        }
+    }
+    updateVerticalCameraBox(canvas, camera) {
+        // Down
+        const cameraBoxBottom = this.cameraBox.position.y + this.cameraBox.height;
+        if (cameraBoxBottom > sceneHeight)
+            return;
+        if (cameraBoxBottom > camera.position.y + canvas.height) {
+            camera.position.y += this.velocity.y;
+        }
+        // Up
+        if (this.cameraBox.position.y < 0)
+            return;
+        if (this.cameraBox.position.y < camera.position.y) {
+            camera.position.y -= this.velocity.y;
         }
     }
 }

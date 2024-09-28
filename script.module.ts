@@ -13,6 +13,13 @@ const ctx = canvas.getContext('2d')
 let scene: IScene
 let player: Player
 
+const camera = {
+  position: {
+    x: 0,
+    y: 0,
+  },
+}
+
 const init = () => {
   resize()
   setup()
@@ -47,11 +54,19 @@ const draw = () => {
   if (imageLoader.isLoaded()) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+    ctx.save()
+    ctx.translate(-camera.position.x, -camera.position.y)
+
     scene.update(delta)
     scene.draw(ctx)
 
     player.update(delta)
     player.draw(ctx)
+
+    player.updateHorizontalCameraBox(canvas, camera)
+    player.updateVerticalCameraBox(canvas, camera)
+
+    ctx.restore()
   }
 
   requestAnimationFrame(draw)
