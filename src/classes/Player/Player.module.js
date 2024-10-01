@@ -79,6 +79,14 @@ class Player extends Object2D {
             this.isBelowJumping = false;
         }, 600);
     }
+    draw(ctx) {
+        ctx.save();
+        // flip horizontally if direction is right
+        ctx.scale(this.direction === 1 ? 1 : -1, 1);
+        ctx.translate(this.direction === 1 ? 0 : -2 * this.position[0], 0);
+        super.draw(ctx);
+        ctx.restore();
+    }
     update(delta) {
         this.applyGravity(delta);
         this.updateVerticalPosition(delta);
