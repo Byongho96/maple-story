@@ -122,6 +122,17 @@ class Player extends Object2D implements IPlayer {
     }, 600)
   }
 
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.save()
+
+    // flip horizontally if direction is right
+    ctx.scale(this.direction === 1 ? 1 : -1, 1)
+    ctx.translate(this.direction === 1 ? 0 : -2 * this.position[0], 0)
+
+    super.draw(ctx)
+    ctx.restore()
+  }
+
   update(delta: number) {
     this.applyGravity(delta)
 
