@@ -48,7 +48,8 @@ export default class Sprite implements ISprite {
   async loadSprite(imageSources: string[]) {
     this.image = await imageLoader.createSpriteImageBitmap(imageSources)
     this.height =
-      this.height || this.width * (this.image.height / this.image.width)
+      this.height ||
+      this.width * ((this.image.height * this.frameCount) / this.image.width)
   }
 
   resetFrame() {
@@ -71,8 +72,8 @@ export default class Sprite implements ISprite {
       cropBox.position[1],
       cropBox.width,
       cropBox.height,
-      this.position[0] - this.width / 2,
-      this.position[1] - this.height / 2,
+      -this.width / 2,
+      -this.height / 2,
       this.width,
       this.height
     )
