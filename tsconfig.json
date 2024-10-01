@@ -15,7 +15,8 @@
     "paths": {
       "@classes/*": ["src/classes/*"],
       "@const/*": ["src/const/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@libs/*": ["src/libs/*"]
     },
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
