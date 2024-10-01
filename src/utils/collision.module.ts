@@ -1,19 +1,14 @@
-import { Block } from 'src/types/index.module'
+import { Block } from 'src/types/index.type'
 
-export function isColliding(object1: Block, object2: Block) {
+export const isColliding = (block1: Block, block2: Block) => {
   return (
-    object1.position.y + object1.height > object2.position.y &&
-    object1.position.y < object2.position.y + object2.height &&
-    object1.position.x + object1.width > object2.position.x &&
-    object1.position.x < object2.position.x + object2.width
-  )
-}
-
-export function isPlatformColliding(object1: Block, object2: Block) {
-  return (
-    object1.position.y + object1.height > object2.position.y &&
-    object1.position.y + object1.height < object2.position.y + object2.height &&
-    object1.position.x + object1.width > object2.position.x &&
-    object1.position.x < object2.position.x + object2.width
+    block1.position[0] - block1.width / 2 <
+      block2.position[0] + block2.width / 2 &&
+    block1.position[0] + block1.width / 2 >
+      block2.position[0] - block2.width / 2 &&
+    block1.position[1] - block1.height / 2 <
+      block2.position[1] + block2.height / 2 &&
+    block1.position[1] + block1.height / 2 >
+      block2.position[1] - block2.height / 2
   )
 }
