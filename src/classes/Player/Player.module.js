@@ -1,13 +1,19 @@
 import Object2D from '../../libs/Object2D/Object2D.module.js';
+import { getStaticPath } from '../../utils/static.module.js';
 const LOCAL_HEAD_POSITION = [0, -50];
 const LOCAL_BODY_POSITION = [0, -50];
 class Player extends Object2D {
     constructor(props) {
         super({
+            name: 'player',
             position: props.position,
-            width: 100,
-            height: 100,
-            imgSrc: 'https://via.placeholder.com/150',
+            width: 90,
+            height: 110,
+            imageSources: [
+                getStaticPath('/assets/character/body/stand2/0/body.png'),
+                getStaticPath('/assets/character/body/stand2/1/body.png'),
+                getStaticPath('/assets/character/body/stand2/2/body.png'),
+            ],
             collision: {
                 type: 'box',
             },
@@ -24,23 +30,24 @@ class Player extends Object2D {
         this.isJumping = 0;
         this.isBelowJumping = false;
         this.bodyObject = new Object2D({
+            name: 'body',
             position: LOCAL_BODY_POSITION,
             width: 100,
             height: 100,
         });
-        this.headObject = new Object2D({
-            position: LOCAL_HEAD_POSITION,
-            width: 100,
-            height: 100,
-        });
-        this.faceObject = new Object2D({
-            position: LOCAL_HEAD_POSITION,
-            width: 100,
-            height: 100,
-        });
+        // this.headObject = new Object2D({
+        //   position: LOCAL_HEAD_POSITION,
+        //   width: 100,
+        //   height: 100,
+        // })
+        // this.faceObject = new Object2D({
+        //   position: LOCAL_HEAD_POSITION,
+        //   width: 100,
+        //   height: 100,
+        // })
         this.add(this.bodyObject);
-        this.add(this.headObject);
-        this.add(this.faceObject);
+        // this.add(this.headObject)
+        // this.add(this.faceObject)
         this.gravity = props.gravity;
         this.maxFallSpeed = props.maxFallSpeed;
         this.maxWidth = props.maxWidth;
@@ -88,6 +95,7 @@ class Player extends Object2D {
         ctx.restore();
     }
     update(delta) {
+        super.update(delta);
         this.applyGravity(delta);
         this.updateVerticalPosition(delta);
         this.updateHorizontalPosition(delta);

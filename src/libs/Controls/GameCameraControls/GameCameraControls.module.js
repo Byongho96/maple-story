@@ -12,6 +12,7 @@ class GameCameraControls {
     update(_) {
         if (!this.enabled)
             return;
+        this.camera.needsUpdate = true;
         this.camera.position[0] = lerp(this.camera.position[0], this.object.position[0], 0.1);
         this.camera.position[1] = lerp(this.camera.position[1], this.object.position[1], 0.1);
         this.checkHorizontalBoundary();

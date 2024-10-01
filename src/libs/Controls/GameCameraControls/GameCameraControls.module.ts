@@ -40,6 +40,8 @@ class GameCameraControls implements IControls {
   update(_: number) {
     if (!this.enabled) return
 
+    this.camera.needsUpdate = true
+
     this.camera.position[0] = lerp(
       this.camera.position[0],
       this.object.position[0],

@@ -33,6 +33,7 @@ const setup = () => {
         width: canvas.width,
         height: canvas.height,
     });
+    scene.add(camera);
     region = new HenesysRegion();
     region.terrain.forEach((terrain) => scene.add(terrain));
     region.boundaries.forEach((boundary) => scene.add(boundary));
@@ -74,6 +75,8 @@ const draw = () => {
     const time = performance.now();
     const delta = time - lastTime;
     lastTime = time;
+    if (delta > 1000)
+        return;
     if (imageLoader.isLoaded) {
         scene.traverse((object) => object.update(delta));
         renderer.render(scene, camera);

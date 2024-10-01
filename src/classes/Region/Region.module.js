@@ -37,7 +37,9 @@ class Region {
                     ],
                     width: TILE_SIZE,
                     height: TILE_SIZE,
-                    imgSrc: getStaticPath(`/assets/map/tile/${this.terrainType}/${TERRAIN_MAP[tile]}/0.png`),
+                    imageSources: [
+                        getStaticPath(`/assets/map/tile/${this.terrainType}/${TERRAIN_MAP[tile]}/0.png`),
+                    ],
                     collision: {
                         type: tile == 2 ? 'platform' : 'box',
                         width: TILE_SIZE,

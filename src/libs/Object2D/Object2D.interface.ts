@@ -5,6 +5,7 @@ import { ICollisionBlock } from '../CollisionBlock/CollisionBlock.interface'
 export type IObject2D = {
   uuid: string
   type: string
+  name: string
 
   position: Position
   worldPosition: Position

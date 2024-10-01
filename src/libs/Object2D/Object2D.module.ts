@@ -6,10 +6,12 @@ import CollisionBlock from '../CollisionBlock/CollisionBlock.module.js'
 import Sprite from '../Sprite/Sprite.module.js'
 
 export type Object2DProps = {
+  name?: string
   position?: Position
   width?: number
   height?: number
-  imgSrc?: string
+  imageSources?: string[]
+  frameBuffer?: number
   collision?: {
     type: CollisionType
     width?: number
@@ -24,12 +26,13 @@ class Object2D implements IObject2D {
   private _worldPosition: Position
   needsUpdate: boolean = false
 
+  name: string
   type: string = 'object'
 
   width: number = 0
   height: number = 0
 
-  image: HTMLImageElement | Sprite | null = null
+  image: Sprite | null = null
 
   isFlipX: boolean = false
   isFlipY: boolean = false
@@ -40,18 +43,22 @@ class Object2D implements IObject2D {
   parent: IObject2D | null = null
 
   constructor(props: Object2DProps) {
+    this.name = props.name || ''
+
     this._position = props.position || [0, 0]
+    this._worldPosition = [...this._position]
 
     this.width = props.width || 0
     this.height = props.height || 0
 
-    if (props.imgSrc) {
-      imageLoader.beforeLoad()
-      this.image = new Image()
-      this.image.onload = () => {
-        imageLoader.onLoad()
-      }
-      this.image.src = props.imgSrc
+    if (props.imageSources) {
+      this.image = new Sprite({
+        position: this.position,
+        width: this.width,
+        height: this.height,
+        imgSources: props.imageSources,
+        frameBuffer: props.frameBuffer,
+      })
     }
 
     if (props.collision) {
@@ -81,18 +88,14 @@ class Object2D implements IObject2D {
 
   set position(value: Position) {
     this._position = value
+
     this.traverse((object) => {
       object.needsUpdate = true
     })
   }
 
-  setImage(image: HTMLImageElement | Sprite) {
-    this.image = image
-  }
-
   add(object: Object2D) {
     this.children.push(object)
-    object.needsUpdate = true
 
     this.traverse((object) => {
       object.needsUpdate = true
@@ -117,8 +120,13 @@ class Object2D implements IObject2D {
 
   update(delta: number) {
     if (this.needsUpdate) this._calculateWorldPosition()
-    if (this.image instanceof Sprite) {
-      this.image.update(delta)
+
+    if (!this.image) return
+
+    this.image.update(delta)
+
+    if (this.name === 'player') {
+      // console.log(this.position, this.worldPosition)
     }
   }
 
@@ -139,21 +147,11 @@ class Object2D implements IObject2D {
 
     if (!this.image) return
 
-    if (this.image instanceof Sprite) {
-      this.image.draw(ctx)
-    } else {
-      ctx.drawImage(
-        this.image,
-        this.position[0] - this.width / 2,
-        this.position[1] - this.height / 2,
-        this.width,
-        this.height
-      )
-    }
+    this.image.draw(ctx)
   }
 
   private _calculateWorldPosition() {
-    this._worldPosition = { ...this.position }
+    this._worldPosition = [...this.position]
 
     if (this.parent) {
       this._worldPosition[0] += this.parent.worldPosition[0]

@@ -1,5 +1,4 @@
 import { getUuid } from '../../utils/id.module.js';
-import imageLoader from '../Loader/ImageLoader/ImageLoader.module.js';
 import CollisionBlock from '../CollisionBlock/CollisionBlock.module.js';
 import Sprite from '../Sprite/Sprite.module.js';
 class Object2D {
@@ -15,16 +14,19 @@ class Object2D {
         this.collisionBlock = null;
         this.children = [];
         this.parent = null;
+        this.name = props.name || '';
         this._position = props.position || [0, 0];
+        this._worldPosition = [...this._position];
         this.width = props.width || 0;
         this.height = props.height || 0;
-        if (props.imgSrc) {
-            imageLoader.beforeLoad();
-            this.image = new Image();
-            this.image.onload = () => {
-                imageLoader.onLoad();
-            };
-            this.image.src = props.imgSrc;
+        if (props.imageSources) {
+            this.image = new Sprite({
+                position: this.position,
+                width: this.width,
+                height: this.height,
+                imgSources: props.imageSources,
+                frameBuffer: props.frameBuffer,
+            });
         }
         if (props.collision) {
             this.collisionBlock = new CollisionBlock({
@@ -52,12 +54,8 @@ class Object2D {
             object.needsUpdate = true;
         });
     }
-    setImage(image) {
-        this.image = image;
-    }
     add(object) {
         this.children.push(object);
-        object.needsUpdate = true;
         this.traverse((object) => {
             object.needsUpdate = true;
         });
@@ -78,8 +76,11 @@ class Object2D {
     update(delta) {
         if (this.needsUpdate)
             this._calculateWorldPosition();
-        if (this.image instanceof Sprite) {
-            this.image.update(delta);
+        if (!this.image)
+            return;
+        this.image.update(delta);
+        if (this.name === 'player') {
+            // console.log(this.position, this.worldPosition)
         }
     }
     draw(ctx) {
@@ -93,15 +94,10 @@ class Object2D {
         }
         if (!this.image)
             return;
-        if (this.image instanceof Sprite) {
-            this.image.draw(ctx);
-        }
-        else {
-            ctx.drawImage(this.image, this.position[0] - this.width / 2, this.position[1] - this.height / 2, this.width, this.height);
-        }
+        this.image.draw(ctx);
     }
     _calculateWorldPosition() {
-        this._worldPosition = Object.assign({}, this.position);
+        this._worldPosition = [...this.position];
         if (this.parent) {
             this._worldPosition[0] += this.parent.worldPosition[0];
             this._worldPosition[1] += this.parent.worldPosition[1];
