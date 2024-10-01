@@ -29,7 +29,8 @@ export default class Sprite {
         return __awaiter(this, void 0, void 0, function* () {
             this.image = yield imageLoader.createSpriteImageBitmap(imageSources);
             this.height =
-                this.height || this.width * (this.image.height / this.image.width);
+                this.height ||
+                    this.width * ((this.image.height * this.frameCount) / this.image.width);
         });
     }
     resetFrame() {
@@ -44,7 +45,7 @@ export default class Sprite {
             width: this.image.width / this.frameCount,
             height: this.image.height,
         };
-        ctx.drawImage(this.image, cropBox.position[0], cropBox.position[1], cropBox.width, cropBox.height, this.position[0] - this.width / 2, this.position[1] - this.height / 2, this.width, this.height);
+        ctx.drawImage(this.image, cropBox.position[0], cropBox.position[1], cropBox.width, cropBox.height, -this.width / 2, -this.height / 2, this.width, this.height);
     }
     update(delta) {
         if (this.frameCount === 1)

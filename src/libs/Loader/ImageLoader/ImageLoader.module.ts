@@ -37,8 +37,9 @@ class ImageLoader {
     )
 
     // calculate total width and max height
-    const totalWidth = bitmaps.reduce((acc, bitmap) => acc + bitmap.width, 0)
+    const maxWidth = Math.max(...bitmaps.map((bitmap) => bitmap.width))
     const maxHeight = Math.max(...bitmaps.map((bitmap) => bitmap.height))
+    const totalWidth = sources.length * maxWidth
 
     // draw bitmaps on offscreen canvas
     const offscreenCanvas = new OffscreenCanvas(totalWidth, maxHeight)
@@ -46,8 +47,12 @@ class ImageLoader {
 
     let x = 0
     bitmaps.forEach((bitmap) => {
-      ctx.drawImage(bitmap, x, 0)
-      x += bitmap.width
+      ctx.drawImage(
+        bitmap,
+        Math.round(x + maxWidth / 2 - bitmap.width / 2),
+        Math.round(maxHeight / 2 - bitmap.height / 2)
+      )
+      x += maxWidth
     })
 
     // transfer offscreen canvas to image bitmap

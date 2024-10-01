@@ -96,6 +96,7 @@ class Object2D implements IObject2D {
 
   add(object: Object2D) {
     this.children.push(object)
+    object.parent = this
 
     this.traverse((object) => {
       object.needsUpdate = true
@@ -119,27 +120,19 @@ class Object2D implements IObject2D {
   }
 
   update(delta: number) {
-    if (this.needsUpdate) this._calculateWorldPosition()
+    this._calculateWorldPosition()
 
     if (!this.image) return
 
     this.image.update(delta)
-
-    if (this.name === 'player') {
-      // console.log(this.position, this.worldPosition)
-    }
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     if (this.collisionBlock) {
       ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'
       ctx.fillRect(
-        this.collisionBlock.position[0] +
-          this.collisionBlock.offset[0] -
-          this.collisionBlock.width / 2,
-        this.collisionBlock.position[1] +
-          this.collisionBlock.offset[1] -
-          this.collisionBlock.height / 2,
+        this.collisionBlock.offset[0] - this.collisionBlock.width / 2,
+        this.collisionBlock.offset[1] - this.collisionBlock.height / 2,
         this.collisionBlock.width,
         this.collisionBlock.height
       )

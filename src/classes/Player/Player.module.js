@@ -1,7 +1,10 @@
 import Object2D from '../../libs/Object2D/Object2D.module.js';
 import { getStaticPath } from '../../utils/static.module.js';
-const LOCAL_HEAD_POSITION = [0, -50];
-const LOCAL_BODY_POSITION = [0, -50];
+const LOCAL_FACE_POSITION = [-5, -28];
+const LOCAL_HEAD_POSITION = [3, -40];
+const LOCAL_BODY_POSITION = [0, 20];
+const LOCAL_ARM_POSITION = [16, 7];
+const LOCAL_HAND_POSITION = [-3, 13];
 class Player extends Object2D {
     constructor(props) {
         super({
@@ -9,11 +12,11 @@ class Player extends Object2D {
             position: props.position,
             width: 90,
             height: 110,
-            imageSources: [
-                getStaticPath('/assets/character/body/stand2/0/body.png'),
-                getStaticPath('/assets/character/body/stand2/1/body.png'),
-                getStaticPath('/assets/character/body/stand2/2/body.png'),
-            ],
+            // imageSources: [
+            //   getStaticPath('/assets/character/body/stand2/0/body.png'),
+            //   getStaticPath('/assets/character/body/stand2/1/body.png'),
+            //   getStaticPath('/assets/character/body/stand2/2/body.png'),
+            // ],
             collision: {
                 type: 'box',
             },
@@ -32,22 +35,58 @@ class Player extends Object2D {
         this.bodyObject = new Object2D({
             name: 'body',
             position: LOCAL_BODY_POSITION,
-            width: 100,
-            height: 100,
+            width: 40,
+            imageSources: [
+                getStaticPath('/assets/character/body/stand2/0/body.png'),
+                getStaticPath('/assets/character/body/stand2/1/body.png'),
+                getStaticPath('/assets/character/body/stand2/2/body.png'),
+            ],
         });
-        // this.headObject = new Object2D({
-        //   position: LOCAL_HEAD_POSITION,
-        //   width: 100,
-        //   height: 100,
-        // })
-        // this.faceObject = new Object2D({
-        //   position: LOCAL_HEAD_POSITION,
-        //   width: 100,
-        //   height: 100,
-        // })
+        this.armObject = new Object2D({
+            name: 'arm',
+            position: LOCAL_ARM_POSITION,
+            width: 20,
+            // height: 60,
+            imageSources: [
+                getStaticPath('/assets/character/body/stand2/0/arm.png'),
+                getStaticPath('/assets/character/body/stand2/1/arm.png'),
+                getStaticPath('/assets/character/body/stand2/2/arm.png'),
+            ],
+        });
+        this.handObject = new Object2D({
+            name: 'hand',
+            position: LOCAL_HAND_POSITION,
+            width: 40,
+            // height: 60,
+            imageSources: [
+                getStaticPath('/assets/character/body/stand2/0/hand.png'),
+                getStaticPath('/assets/character/body/stand2/1/hand.png'),
+                getStaticPath('/assets/character/body/stand2/2/hand.png'),
+            ],
+        });
+        this.headObject = new Object2D({
+            name: 'head',
+            position: LOCAL_HEAD_POSITION,
+            width: 80,
+            imageSources: [
+                getStaticPath('/assets/character/head/stand2/0/head.png'),
+                getStaticPath('/assets/character/head/stand2/1/head.png'),
+                getStaticPath('/assets/character/head/stand2/2/head.png'),
+            ],
+        });
+        this.faceObject = new Object2D({
+            name: 'face',
+            position: LOCAL_FACE_POSITION,
+            width: 55,
+            imageSources: [
+                getStaticPath('/assets/character/face/00020000.img/default/face.png'),
+            ],
+        });
         this.add(this.bodyObject);
-        // this.add(this.headObject)
-        // this.add(this.faceObject)
+        this.add(this.armObject);
+        this.add(this.handObject);
+        this.add(this.headObject);
+        this.add(this.faceObject);
         this.gravity = props.gravity;
         this.maxFallSpeed = props.maxFallSpeed;
         this.maxWidth = props.maxWidth;
@@ -60,7 +99,12 @@ class Player extends Object2D {
     //   this.object.setImage(sprite)
     // }
     horizontalMove(direction) {
-        this.direction = direction;
+        if (direction === 1) {
+            this.isFlipX = false;
+        }
+        else {
+            this.isFlipX = true;
+        }
         this.horizontalPressed = direction;
     }
     verticalMove(direction) {
@@ -89,8 +133,8 @@ class Player extends Object2D {
     draw(ctx) {
         ctx.save();
         // flip horizontally if direction is right
+        // console.log(this.direction)
         ctx.scale(this.direction === 1 ? 1 : -1, 1);
-        ctx.translate(this.direction === 1 ? 0 : -2 * this.position[0], 0);
         super.draw(ctx);
         ctx.restore();
     }

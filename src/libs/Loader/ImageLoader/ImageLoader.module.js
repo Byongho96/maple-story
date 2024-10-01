@@ -43,15 +43,16 @@ class ImageLoader {
         return __awaiter(this, void 0, void 0, function* () {
             const bitmaps = yield Promise.all(sources.map((source) => this.createImageBitmap(source)));
             // calculate total width and max height
-            const totalWidth = bitmaps.reduce((acc, bitmap) => acc + bitmap.width, 0);
+            const maxWidth = Math.max(...bitmaps.map((bitmap) => bitmap.width));
             const maxHeight = Math.max(...bitmaps.map((bitmap) => bitmap.height));
+            const totalWidth = sources.length * maxWidth;
             // draw bitmaps on offscreen canvas
             const offscreenCanvas = new OffscreenCanvas(totalWidth, maxHeight);
             const ctx = offscreenCanvas.getContext('2d');
             let x = 0;
             bitmaps.forEach((bitmap) => {
-                ctx.drawImage(bitmap, x, 0);
-                x += bitmap.width;
+                ctx.drawImage(bitmap, Math.round(x + maxWidth / 2 - bitmap.width / 2), Math.round(maxHeight / 2 - bitmap.height / 2));
+                x += maxWidth;
             });
             // transfer offscreen canvas to image bitmap
             const combinedBitmap = offscreenCanvas.transferToImageBitmap();

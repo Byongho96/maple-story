@@ -56,6 +56,7 @@ class Object2D {
     }
     add(object) {
         this.children.push(object);
+        object.parent = this;
         this.traverse((object) => {
             object.needsUpdate = true;
         });
@@ -74,23 +75,15 @@ class Object2D {
         this.children.forEach((child) => child.traverse(cb));
     }
     update(delta) {
-        if (this.needsUpdate)
-            this._calculateWorldPosition();
+        this._calculateWorldPosition();
         if (!this.image)
             return;
         this.image.update(delta);
-        if (this.name === 'player') {
-            // console.log(this.position, this.worldPosition)
-        }
     }
     draw(ctx) {
         if (this.collisionBlock) {
             ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-            ctx.fillRect(this.collisionBlock.position[0] +
-                this.collisionBlock.offset[0] -
-                this.collisionBlock.width / 2, this.collisionBlock.position[1] +
-                this.collisionBlock.offset[1] -
-                this.collisionBlock.height / 2, this.collisionBlock.width, this.collisionBlock.height);
+            ctx.fillRect(this.collisionBlock.offset[0] - this.collisionBlock.width / 2, this.collisionBlock.offset[1] - this.collisionBlock.height / 2, this.collisionBlock.width, this.collisionBlock.height);
         }
         if (!this.image)
             return;
