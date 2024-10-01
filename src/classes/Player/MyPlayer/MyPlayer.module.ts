@@ -12,15 +12,23 @@ class MyPlayer extends Player {
     switch (event.code) {
       case 'ArrowLeft':
         event.preventDefault()
-        this.move(1)
+        this.horizontalMove(1)
         break
       case 'ArrowRight':
         event.preventDefault()
-        this.move(2)
+        this.horizontalMove(2)
+        break
+      case 'ArrowUp':
+        event.preventDefault()
+        this.verticalMove(1)
+        break
+      case 'ArrowDown':
+        event.preventDefault()
+        this.verticalMove(2)
         break
       case 'AltLeft':
         event.preventDefault()
-        this.jump()
+        this.verticalPressed == 2 ? this.belowJump() : this.jump()
         break
     }
   }
@@ -28,10 +36,16 @@ class MyPlayer extends Player {
   handleKeyUp(event: KeyboardEvent) {
     switch (event.code) {
       case 'ArrowLeft':
-        this.horizontalPressed === 1 && this.stop()
+        this.horizontalPressed === 1 && this.horizontalStop()
         break
       case 'ArrowRight':
-        this.horizontalPressed === 2 && this.stop()
+        this.horizontalPressed === 2 && this.horizontalStop()
+        break
+      case 'ArrowUp':
+        this.verticalPressed === 1 && this.verticalStop()
+        break
+      case 'ArrowDown':
+        this.verticalPressed === 2 && this.verticalStop()
         break
     }
   }

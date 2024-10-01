@@ -34,8 +34,8 @@ class Region implements IRegion {
   terrain: Object2D[] = []
   boundaries: Object2D[] = []
 
-  gravity: number = 1
-  maxFallSpeed: number = 20
+  gravity: number = 0.8
+  maxFallSpeed: number = 14
 
   constructor(props: RegionProps) {
     this.terrainType = props.terrainType

@@ -32,12 +32,13 @@ class Player extends Object2D implements IPlayer {
   maxWidth: number
   maxHeight: number
 
-  moveForce: number = 5
+  moveForce: number = 4
   jumpForce: number = 18
 
   horizontalPressed: 0 | 1 | 2 = 0 // 0: none, 1: left, 2: right
-  verticalPressed: 0 | 1 | 2 // 0: none, 1: up, 2: down
+  verticalPressed: 0 | 1 | 2 = 0 // 0: none, 1: up, 2: down
   isJumping: number = 0
+  isBelowJumping: boolean = false
 
   sprites: Record<PlayerState, Sprite>
 
@@ -88,19 +89,37 @@ class Player extends Object2D implements IPlayer {
   //   this.object.setImage(sprite)
   // }
 
-  move(direction: 1 | 2) {
+  horizontalMove(direction: 1 | 2) {
     this.direction = direction
     this.horizontalPressed = direction
   }
 
-  stop() {
+  verticalMove(direction: 1 | 2) {
+    this.verticalPressed = direction
+  }
+
+  horizontalStop() {
     this.horizontalPressed = 0
+  }
+
+  verticalStop() {
+    this.verticalPressed = 0
   }
 
   jump() {
     if (this.isJumping) return
 
     this.velocity[1] = -this.jumpForce
+  }
+
+  belowJump() {
+    if (this.isJumping) return
+
+    this.velocity[1] = -5
+    this.isBelowJumping = true
+    setTimeout(() => {
+      this.isBelowJumping = false
+    }, 600)
   }
 
   update(delta: number) {
@@ -160,7 +179,7 @@ class Player extends Object2D implements IPlayer {
     }
 
     // Check if player is colliding with platforms
-    if (this.velocity[1] < 0) return
+    if (this.velocity[1] < 0 || this.isBelowJumping) return
 
     for (let i = 0; i < this.platforms.length; i++) {
       const platform = this.platforms[i].collisionBlock
