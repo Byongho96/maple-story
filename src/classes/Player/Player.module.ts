@@ -2,6 +2,8 @@ import Object2D from '@libs/Object2D/Object2D.module.js'
 import { IPlayer, PlayerState } from './Player.interface'
 import Sprite from '@libs/Sprite/Sprite.module.js'
 import { Position, Velocity } from 'src/types/index.type'
+import imageLoader from '@libs/Loader/ImageLoader/ImageLoader.module.js'
+import { getStaticPath } from '@utils/static.module.js'
 
 const LOCAL_HEAD_POSITION: Position = [0, -50]
 const LOCAL_BODY_POSITION: Position = [0, -50]
@@ -44,36 +46,42 @@ class Player extends Object2D implements IPlayer {
 
   constructor(props: PlayerProps) {
     super({
+      name: 'player',
       position: props.position,
-      width: 100,
-      height: 100,
-      imgSrc: 'https://via.placeholder.com/150',
+      width: 90,
+      height: 110,
+      imageSources: [
+        getStaticPath('/assets/character/body/stand2/0/body.png'),
+        getStaticPath('/assets/character/body/stand2/1/body.png'),
+        getStaticPath('/assets/character/body/stand2/2/body.png'),
+      ],
       collision: {
         type: 'box',
       },
     })
 
     this.bodyObject = new Object2D({
+      name: 'body',
       position: LOCAL_BODY_POSITION,
       width: 100,
       height: 100,
     })
 
-    this.headObject = new Object2D({
-      position: LOCAL_HEAD_POSITION,
-      width: 100,
-      height: 100,
-    })
+    // this.headObject = new Object2D({
+    //   position: LOCAL_HEAD_POSITION,
+    //   width: 100,
+    //   height: 100,
+    // })
 
-    this.faceObject = new Object2D({
-      position: LOCAL_HEAD_POSITION,
-      width: 100,
-      height: 100,
-    })
+    // this.faceObject = new Object2D({
+    //   position: LOCAL_HEAD_POSITION,
+    //   width: 100,
+    //   height: 100,
+    // })
 
     this.add(this.bodyObject)
-    this.add(this.headObject)
-    this.add(this.faceObject)
+    // this.add(this.headObject)
+    // this.add(this.faceObject)
 
     this.gravity = props.gravity
     this.maxFallSpeed = props.maxFallSpeed
@@ -134,6 +142,8 @@ class Player extends Object2D implements IPlayer {
   }
 
   update(delta: number) {
+    super.update(delta)
+
     this.applyGravity(delta)
 
     this.updateVerticalPosition(delta)

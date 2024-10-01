@@ -1,6 +1,7 @@
 import Object2D from '@libs/Object2D/Object2D.module.js'
 import { IRegion } from './Region.interface'
 import { getStaticPath } from '@utils/static.module.js'
+import imageLoader from '@libs/Loader/ImageLoader/ImageLoader.module.js'
 
 const TILE_SIZE = 80
 
@@ -61,9 +62,11 @@ class Region implements IRegion {
           ],
           width: TILE_SIZE,
           height: TILE_SIZE,
-          imgSrc: getStaticPath(
-            `/assets/map/tile/${this.terrainType}/${TERRAIN_MAP[tile]}/0.png`
-          ),
+          imageSources: [
+            getStaticPath(
+              `/assets/map/tile/${this.terrainType}/${TERRAIN_MAP[tile]}/0.png`
+            ),
+          ],
           collision: {
             type: tile == 2 ? 'platform' : 'box',
             width: TILE_SIZE,

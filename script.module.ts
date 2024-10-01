@@ -40,10 +40,12 @@ const setup = () => {
   renderer = new Renderer(canvas)
 
   scene = new Scene()
+
   camera = new Camera({
     width: canvas.width,
     height: canvas.height,
   })
+  scene.add(camera)
 
   region = new HenesysRegion()
   region.terrain.forEach((terrain) => scene.add(terrain))
@@ -91,6 +93,8 @@ const draw = () => {
   const time = performance.now()
   const delta = time - lastTime
   lastTime = time
+
+  if (delta > 1000) return
 
   if (imageLoader.isLoaded) {
     scene.traverse((object) => object.update(delta))
