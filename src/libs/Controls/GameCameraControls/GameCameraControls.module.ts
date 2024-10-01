@@ -1,6 +1,7 @@
-import Object2D from 'src/libs/Object2D/Object2D.module'
+import Object2D from 'src/libs/Object2D/Object2D.module.js'
 import { IControls } from '../Controls.interface'
-import Camera from 'src/libs/Camera/Camera.module'
+import Camera from 'src/libs/Camera/Camera.module.js'
+import { lerp } from '@utils/lerp.module.js'
 
 type Boundary = {
   top: number
@@ -30,13 +31,25 @@ class GameCameraControls implements IControls {
     this.canvas = props.canvas
     this.camera = props.camera
 
+    this.camera.position[0] = this.object.position[0]
+    this.camera.position[1] = this.object.position[1]
+
     this.boundary = props.boundary
   }
 
   update(_: number) {
     if (!this.enabled) return
 
-    this.camera.position = { ...this.object.position }
+    this.camera.position[0] = lerp(
+      this.camera.position[0],
+      this.object.position[0],
+      0.1
+    )
+    this.camera.position[1] = lerp(
+      this.camera.position[1],
+      this.object.position[1],
+      0.1
+    )
 
     this.checkHorizontalBoundary()
     this.checkVerticalBoundary()
