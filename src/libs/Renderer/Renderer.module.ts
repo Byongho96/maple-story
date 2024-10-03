@@ -28,12 +28,40 @@ class Renderer {
     )
 
     // render only objects that are colliding with the camera
-    scene.traverse((object: Object2D) => {
+
+    const draw = (object: Object2D) => {
       this.ctx.save()
-      this.ctx.translate(object.worldPosition[0], object.worldPosition[1])
-      object.draw(this.ctx)
+      this.ctx.translate(object.position[0], object.position[1])
+      this.ctx.scale(object.isFlipX ? -1 : 1, object.isFlipY ? -1 : 1)
+
+      if (isColliding(camera, object)) {
+        if (object.collisionBlock) {
+          this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'
+          this.ctx.fillRect(
+            object.collisionBlock.offset[0] - object.collisionBlock.width / 2,
+            object.collisionBlock.offset[1] - object.collisionBlock.height / 2,
+            object.collisionBlock.width,
+            object.collisionBlock.height
+          )
+        }
+
+        object.image && object.image.draw(this.ctx)
+      }
+
+      object.children.forEach((child) => {
+        draw(child)
+      })
+
       this.ctx.restore()
-    })
+    }
+    draw(scene)
+
+    // scene.traverse((object: Object2D) => {
+    //   this.ctx.save()
+    //   this.ctx.translate(object.worldPosition[0], object.worldPosition[1])
+    //   object.draw(this.ctx)
+    //   this.ctx.restore()
+    // })
 
     this.ctx.restore()
   }

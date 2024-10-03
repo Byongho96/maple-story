@@ -27,6 +27,5 @@ export type IObject2D = {
 
   traverse(cb: (object: IObject2D) => void): void
 
-  draw(ctx: CanvasRenderingContext2D): void
   update?(delta: number): void
 }

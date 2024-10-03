@@ -80,15 +80,6 @@ class Object2D {
             return;
         this.image.update(delta);
     }
-    draw(ctx) {
-        if (this.collisionBlock) {
-            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-            ctx.fillRect(this.collisionBlock.offset[0] - this.collisionBlock.width / 2, this.collisionBlock.offset[1] - this.collisionBlock.height / 2, this.collisionBlock.width, this.collisionBlock.height);
-        }
-        if (!this.image)
-            return;
-        this.image.draw(ctx);
-    }
     _calculateWorldPosition() {
         this._worldPosition = [...this.position];
         if (this.parent) {
