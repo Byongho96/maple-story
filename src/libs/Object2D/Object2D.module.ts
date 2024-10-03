@@ -39,8 +39,8 @@ class Object2D implements IObject2D {
 
   collisionBlock: CollisionBlock | null = null
 
-  children: IObject2D[] = []
-  parent: IObject2D | null = null
+  children: Object2D[] = []
+  parent: Object2D | null = null
 
   constructor(props: Object2DProps) {
     this.name = props.name || ''
@@ -125,22 +125,6 @@ class Object2D implements IObject2D {
     if (!this.image) return
 
     this.image.update(delta)
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    if (this.collisionBlock) {
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'
-      ctx.fillRect(
-        this.collisionBlock.offset[0] - this.collisionBlock.width / 2,
-        this.collisionBlock.offset[1] - this.collisionBlock.height / 2,
-        this.collisionBlock.width,
-        this.collisionBlock.height
-      )
-    }
-
-    if (!this.image) return
-
-    this.image.draw(ctx)
   }
 
   private _calculateWorldPosition() {
